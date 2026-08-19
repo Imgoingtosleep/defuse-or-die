@@ -1,0 +1,77 @@
+.switch-container {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.switch-item {
+  margin: 10px 0;
+  display: flex;
+  align-items: center;
+  font-size: 1rem;
+}
+
+.switch-item label {
+  display: flex;
+  align-items: center;
+  position: relative;
+  font-size: 1rem;
+}
+
+.switch-item input {
+  display: none; /* Hide the default checkbox */
+}
+
+.switch-slider {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+  background-color: #ccc;
+  border-radius: 34px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin: 0 10px;
+}
+
+.switch-slider::before {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 26px;
+  height: 26px;
+  background-color: white;
+  border-radius: 50%;
+  transition: transform 0.3s;
+}
+
+input:checked + .switch-slider {
+  background-color: #4caf50; /* Green when on */
+}
+
+input:checked + .switch-slider::before {
+  transform: translateX(26px); /* Move slider when checked */
+}
+
+.switch-labels {
+  display: flex;
+  justify-content: space-between;
+  width: 60px;
+  font-size: 0.8rem;
+  color: #fff;
+  margin: 0 10px;
+}
+
+.switch-labels span {
+  width: 50%;
+  text-align: center;
+}
+
+.switch-labels .off {
+  color: #f00; /* Red for OFF */
+}
+
+.switch-labels .on {
+  color: #0f0; /* Green for ON */
+}

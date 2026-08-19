@@ -1,0 +1,25 @@
+.fuse-panel {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.fuse-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  margin: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.fuse-button:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
+
+.fuse-pulled {
+  background-color: #28a745;
+}

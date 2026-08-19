@@ -1,0 +1,70 @@
+.battery-holder{
+    width: 25%;
+    height: 75%;
+    border: solid rgb(69, 69, 69);
+    background: rgb(106,106,106);
+    background: linear-gradient(90deg, rgb(158, 158, 158) 0%, rgba(106,106,106,1) 45%,rgba(106,106,106,1) 55%, rgba(158, 158, 158) 100%);
+    opacity: 0.8;
+    border-radius: 2px;
+    position: relative;
+    display: flex;
+}
+
+.battery-holder-top{
+    height: 4%;
+    width: 75%;
+    background-color: rgb(233, 233, 233);
+    position: absolute;
+    left: 12.5%;
+}
+
+.battery-holder-bot{
+    height: 4%;
+    width: 75%;
+    background-color: rgb(208, 208, 208);
+    position: absolute;
+    bottom: 0;
+    left: 12.5%;
+}
+
+.mybattery{
+    border-radius: 3px;
+    width: 80%;
+    height: 90%;
+    background: rgb(127,0,0);
+    background: linear-gradient(90deg, rgba(127,0,0,1) 0%, rgb(169, 61, 61) 50%, rgba(127,0,0,1) 100%);
+    position: absolute;
+    z-index: 10;
+    top: 5%;
+    left: 10%;
+    cursor: pointer;
+}
+
+.mybattery:hover{
+    opacity: 0.8;
+}
+
+.PS{
+    cursor: pointer;
+    position: absolute;
+    height: 96%;
+    width: 14%;
+    background-color: rgb(76, 75, 75);
+    left: 44%;
+    top: 2%;
+    border-radius: 1px;
+}
+
+@keyframes fall-b {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(300px); 
+      opacity: 0;
+    }
+  }
+  
+.fall-animation-b {
+    animation: fall-b 1s ease forwards; 
+}

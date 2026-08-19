@@ -1,0 +1,45 @@
+.manual-screen {
+    position: relative;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: grey; /* Light background to simulate paper environment */
+  }
+  
+  .back-button {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    text-decoration: none;
+  }
+  
+  .back-button button {
+    border: none;
+    background-color: #000;
+    color: #fff;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  .paper {
+    width: 210mm; /* A4 paper width */
+    height: 600px; /* A4 paper height */
+    background-color: #fff;
+    padding: 2rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    overflow: auto;
+  }
+  
+  .paper h1 {
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+  
+  .paper p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+  }

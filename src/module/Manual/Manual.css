@@ -1,0 +1,135 @@
+.manual-button-overlay {
+  position: absolute; /* Fixed positioning to stay in place relative to the viewport */
+  top:7vh;
+  right: -15vw;
+  width: 4vw; /* Width of the button */
+  height: 4vw; /* Height of the button */
+  background-color: #6c6c6c;
+  background-image: url("paper.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 4vw 3.7vw;
+  border: none;
+  border-radius: 8px; /* Rounded corners */
+  cursor: pointer; /* Pointer cursor on hover */
+  display: flex;
+  justify-content: center; /* Center content horizontally */
+  align-items: center; /* Center content vertically */
+  z-index: 1000;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.manual-button-overlay:hover {
+  background-color: #4d4d4d; /* Darker background color on hover */
+  transform: scale(1.05); /* Slightly enlarge the button */
+}
+
+.arrow {
+  position: absolute;
+  top: 50%;
+  width: 4vw; /* Width of the button */
+  height: 2vw; /* Height of the button */
+  background-color: #6c6c6c;
+  transform: translateY(-50%);
+  text-align: center;
+  align-items: center;
+  font-display: center;
+  font-size: 30px;
+  cursor: pointer;
+  z-index: 1030;
+
+}
+
+.arrow-left {
+  left: 0vw;
+}
+
+.arrow-right {
+  right: 0vw;
+}
+
+.arrow:hover {
+  color: #ffffff;
+  
+}
+
+/* Exit button in modal */
+.exit-button {
+  position: absolute;
+  top: 7vh;
+  right: 10vw;
+  background-color: rgb(255, 0, 0);
+  width: 4vw;
+  height: 4vw;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+  background-image: url("X.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 2.5vw 2.5vw;
+  transition: background-color 0.3s ease, transform 0.3s ease
+}
+
+.exit-button:hover {
+  background-color: darkred;
+  transform: scale(1.05);
+}
+
+/* Text area inside the modal for user input */
+.manual-text {
+  width: 100%;
+  height: 80%;
+  padding: 10px;
+  font-size: 20px;
+  border-radius: 5px;
+  resize: none;
+  white-space: pre-line;
+  text-align: center;
+}
+
+.blur-background {
+  filter: blur(8px);
+  pointer-events: none; /* Prevent interaction with the blurred content */
+}
+
+/* Overlay for modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1020;
+}
+
+/* Modal box */
+.modal {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 16px;
+  z-index: 1020;
+}
+
+/* Buttons inside modal */
+.modal button {
+  margin: 10px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
+  color: white;
+}
+
+.modal button:hover {
+  background-color: #0056b3;
+}

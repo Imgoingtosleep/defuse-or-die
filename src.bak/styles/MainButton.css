@@ -1,0 +1,24 @@
+.main-button {
+  display: flex;
+  justify-content: center;
+  margin: 20px;
+}
+
+.main-button button {
+  padding: 15px 30px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.main-button button:hover {
+  background-color: #0056b3;
+}
+
+.main-button button:focus {
+  outline: none;
+}

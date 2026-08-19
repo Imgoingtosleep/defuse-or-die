@@ -1,0 +1,101 @@
+
+.wire-container {
+    background-color: rgb(92, 92, 92);
+    padding: 5%;
+    border-radius: 3px;
+    height: 95%;
+    width: 90%;
+}
+
+.mybox {
+    width: 78%;
+    height: 16%;
+    background: linear-gradient(145deg, #333, #313131);
+    box-shadow: inset 1px 1px 15px  rgba(0, 0, 0, 0.5), 0 4px 8px rgba(0, 0, 0, 0.3);
+    z-index: 1; /* Ensure boxes are above the wires */
+    position: absolute;
+    border-radius: 3px;
+}
+
+.mybox-top {
+   left: 11%;
+   top: 6%;
+}
+
+.mybox-bot {
+    left: 11%;
+    top: 78%;
+}
+
+.mywire {
+    width: 6px; /* Adjust the thickness of the wire for a more balanced look */
+    position: absolute;
+    top: 13%; 
+    bottom: 13%;
+    z-index: 100;
+    background-color: #333; /* Default color for wires */
+    border: 1.8px solid #333; /* Gray border for modern look */
+    border-radius: 4px; /* Rounded edges */
+    
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3); /* Shadow to make wires appear elevated */
+    transition: all 0.3s;
+    cursor: pointer;
+}
+
+.mywire:hover {
+    opacity: 0.8;
+    border-color: #525252; /* Slightly lighter border on hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4); /* Increase shadow on hover */
+}
+
+.mywire:active {
+    opacity: 0.5;
+    border-color: #555; /* Darker border on active */
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2); /* Reduce shadow on active */
+}
+
+.mywire.red { background-color: #cc1b18; left: 18%; }
+.mywire.green { background-color: #338f37; left: 34%; }
+.mywire.yellow { background-color: #d2a22a; left: 50%; }
+.mywire.pink { background-color: #cf167c; left: 65%; }
+.mywire.blue { background-color: #186db8; left: 80%; }
+
+.mywire-cut{
+    width: 6px; /* Adjust the thickness of the wire for a more balanced look */
+    position: absolute;
+    z-index: 100;
+    z-index: 100;
+    background-color: #333; /* Default color for wires */
+    border: 1.8px solid #333; /* Gray border for modern look */
+    border-radius: 4px; /* Rounded edges */
+    
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3); /* Shadow to make wires appear elevated */
+}
+
+.mywire-cut.red { background-color: #cc1b18; left: 18%; }
+.mywire-cut.green { background-color: #338f37; left: 34%; }
+.mywire-cut.yellow { background-color: #d2a22a; left: 50%; }
+.mywire-cut.pink { background-color: #cf167c; left: 65%; }
+.mywire-cut.blue { background-color: #186db8; left: 80%; }
+
+.top{
+    top: 13%;
+    bottom: 60%;
+    animation: animation-wire-top 0.15s 1;
+}
+
+.bot{
+    top: 60%;
+    bottom: 13%;
+    animation: animation-wire-bot 0.15s 1;
+}
+
+@keyframes animation-wire-top {
+    0%{bottom: 50%;}
+    100%{bottom: 60%;}
+}
+
+@keyframes animation-wire-bot {
+    0%{top: 50%;}
+    100%{top: 60%;}
+}

@@ -1,0 +1,39 @@
+.fuse-panel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 10px;
+  border: 2px solid #ddd;
+  border-radius: 5px;
+  background-color: #f8f9fa;
+}
+
+.eComponent-button {
+  background-color: #007bff; /* Blue color for the button */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.eComponent-button:hover {
+  background-color: #0056b3; /* Darker blue for hover effect */
+}
+
+.eComponent-pulled {
+  background-color: #6c757d; /* Gray color for pulled components */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: not-allowed; /* Cursor to indicate the button is disabled */
+}
+
+.eComponent-pulled:disabled {
+  background-color: #6c757d; /* Same gray as .eComponent-pulled */
+  cursor: not-allowed; /* Same as for .eComponent-pulled */
+}

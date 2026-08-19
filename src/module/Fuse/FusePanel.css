@@ -1,0 +1,85 @@
+.myfuse{
+    position: absolute;
+    width: 70%;
+    height: 8%;
+    background: rgb(106,106,106);
+    background: linear-gradient(180deg, rgb(192, 192, 192) 0%, rgba(106,106,106,1) 50%, rgba(192, 192, 192) 100%);
+    z-index: 100;
+    border: none;
+    border-radius: 3px;
+    opacity: 0.6;
+    box-shadow: 0px 4px 8px rgba(50, 50, 50, 0.4); /* ปรับสีเงาให้เป็นเทาเข้ม */
+    cursor: pointer;
+}
+
+.fuse-box{
+  transition: all 0.3s;
+}
+
+.fuse-box:hover{
+  opacity: 0.8;
+}
+
+.fuse-h, .fuse-t{
+    position: absolute;
+    width: 15%;
+    height: 10%;
+    background-color: rgb(154, 154, 154);
+    border-radius: 5px;
+    cursor: pointer;
+    z-index: 1000;
+    box-shadow: inset 1px 1px 15px rgba(0, 0, 0, 0.5), 0 4px 8px rgba(0, 0, 0, 0.3); /* Shadow effect */
+    opacity: 1;
+}
+
+.fuse-h.fuse1{ top: 9%; left: 9%; }
+.fuse-h.fuse2{ top: 29%; left: 9%; }
+.fuse-h.fuse3{ top: 59%; left: 9%; }
+.fuse-h.fuse4{ top: 79%; left: 9%; }
+
+.fuse-t.fuse1{ top: 9%; right: 9%; }
+.fuse-t.fuse2{ top: 29%; right: 9%; }
+.fuse-t.fuse3{ top: 59%; right: 9%; }
+.fuse-t.fuse4{ top: 79%; right: 9%; }
+
+.myfuse.fuse1{ top: 10.2%; left: 15%; }
+.myfuse.fuse2{ top: 30.2%; left: 15%; }
+.myfuse.fuse3{ top: 60.2%; left: 15%; }
+.myfuse.fuse4{ top: 80.2%; left: 15%; }
+
+.wavy{
+    cursor: pointer;
+    position: absolute;
+    width: 70%;
+    height: 5%;
+    z-index: 500;
+    opacity: 0.8;
+}
+
+.wavy::before{
+    content: "aaaaaaaaaaaaaa";
+    font-size: 100%;
+    color: transparent;
+    text-decoration-style: wavy;
+    text-decoration-color: rgb(221, 221, 221);
+    text-decoration-line: underline;
+}
+
+.wavy.fuse1{ top: 9%; left: 15%; }
+.wavy.fuse2{ top: 29%; left: 15%; }
+.wavy.fuse3{ top: 59%; left: 15%; }
+.wavy.fuse4{ top: 79%; left: 15%; }
+
+@keyframes fall-f {
+    0% {
+      transform: translateY(0);
+    }
+    100% {
+      transform: translateY(300px); 
+      opacity: 0;
+    }
+  }
+  
+.fall-animation-f {
+    animation: fall-f 1s ease forwards; 
+}

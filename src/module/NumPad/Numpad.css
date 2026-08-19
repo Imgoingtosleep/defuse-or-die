@@ -1,0 +1,40 @@
+@import url('https://fonts.googleapis.com/css2?family=Play:wght@400;700&display=swap');
+
+.keypad {
+    width: 90%;
+    height: 90%;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    padding: 20px;
+    background: linear-gradient(145deg, #303030, #454545); /* Almost black background for keypad */
+    border-radius: 3px;
+    box-sizing: border-box;
+}
+
+.key {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    border: 2px solid #444; /* Darker gray border */
+    border-radius: 3px;
+    color: #fff; /* White text color */
+    background-color: #555; /* Dark gray background */
+    font-family: "Play", sans-serif;
+    font-size: 35px;
+    color: rgb(225, 225, 225);
+    cursor: pointer;
+    transition: all 0.5s;
+}
+
+.key:hover {
+    background-color: #666; /* Slightly lighter gray on hover */
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3); /* Subtle shadow effect */
+    transform: translateY(-3px);
+}
+
+.key:active {
+    background-color: #444; /* Darker gray on active */
+    transform: translateY(1px);
+}

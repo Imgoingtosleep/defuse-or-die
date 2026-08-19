@@ -1,0 +1,269 @@
+.line{
+    position: absolute;
+    border: 3px solid #3b3b3b; 
+    background-color: #2a5e36;
+    z-index: 0;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5); /* Shadow for depth */
+}
+
+.hor{
+    width: 33%;
+    height: 3.4%;
+}
+
+.hor.line1{
+    top: 11.8%;
+    left: 63%;
+}
+
+.hor.line2{
+    top: 18.4%;
+    left: 63%;
+}
+
+.hor.line3{
+    top: 25%;
+    left: 63%;
+}
+
+.hor.line4{
+    top: 31.5%;
+    left: 63%;
+}
+
+.hor.line5{
+    top: 38%;
+    left: 63%;
+}
+
+.ver{
+    width: 2%;
+    height: 14.5%;
+}
+
+.ver.line6{
+    top: 51.3%;
+    left: 54.3%;
+}
+
+.ver.line7{
+    top: 51.3%;
+    left: 60.8%;
+}
+
+.ver.line8{
+    top: 51.3%;
+    left: 67.3%;
+}
+
+.ver.line9{
+    top: 51.3%;
+    left: 73.9%;
+}
+
+.ver.line10{
+    top: 51.3%;
+    left: 80.4%;
+}
+
+.ver.line11{
+    top: 51.3%;
+    left: 87%;
+}
+
+.chip1{
+    width: 34.7%;
+    height: 4%;
+}
+
+.chip1.line12{
+    top: 81.5%;
+    left: 56.5%;
+}
+
+.chip1.line13{
+    top: 75%;
+    left: 56.5%;
+}
+
+.chip2{
+    width: 6.5%;
+    height: 21%;
+}
+
+.chip2.line14{
+    top: 69.75%;
+    left: 64.3%;
+}
+
+.chip2.line15{
+    top: 69.75%;
+    left: 76%;
+}
+
+.com {
+    position: absolute;
+    border: 3px solid #4a4a4a;
+    transition: opacity 0.3s, transform 0.3s; /* Smooth transition for hover and active */
+    background: linear-gradient(to bottom, #747473, #565656); /* Gradient for components */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6); /* Drop shadow for components */
+    cursor: pointer;
+}
+
+.com:hover {
+    opacity: 0.7;
+}
+
+.com:active {
+    opacity: 0.5;
+    transform: scale(0.95); /* Slightly shrink on active */
+}
+
+.hor, .ver, .chip1, .chip2 {
+    background: linear-gradient(to right, #999999, #666666); /* Gradient for lines */
+}
+
+/* Transistors */
+.transister_brown {
+    width: 43.5%;
+    height: 15.8%;
+    top: 79%;
+    left: 6.5%;
+    background: linear-gradient(to bottom, #b29a4b, #8a7a35); /* Gradient for transistor */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* Drop shadow */
+}
+
+.transister_black {
+    width: 26%;
+    height: 26.3%;
+    top: 4%;
+    left: 6.5%;
+    background: linear-gradient(to right, #232323, #141414); /* Gradient for transistor */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+}
+
+.transister_blue {
+    width: 8.6%;
+    height: 31.6%;
+    top: 10.5%;
+    left: 47.8%;
+    background: linear-gradient(to bottom, #3f6b95, #2b4d6a); /* Gradient for transistor */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+/* Resistors */
+.resister1 {
+    width: 7.8%;
+    height: 15.7%;
+    top: 35.5%;
+    left: 34.8%;
+    border-radius: 10px;
+    background: linear-gradient(to bottom, #cb1f1f, #8b1515); /* Gradient for resistor */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+}
+
+.resister2 {
+    width: 7.8%;
+    height: 15.7%;
+    top: 56.3%;
+    left: 34.8%;
+    border-radius: 10px;
+    background: linear-gradient(to bottom, #FFD700, #c5a200); /* Gold color */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+}
+
+/* Capacitors */
+.com_capaciter {
+    position: absolute;
+    width: 14.8%;
+    height: 9%;
+    border-radius: 50%;
+    border: 5px solid #353535; /* Dark green border */
+    background: linear-gradient(to bottom, #747473, #565656); /* Gradient for capacitor */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    transition: all 0.3s;
+    cursor: pointer;
+}
+
+.com_capaciter:hover{
+    opacity: 0.7;
+}
+
+.com1 {
+    top: 63%;
+    left: 6.5%;
+}
+
+.com2 {
+    top: 48.7%;
+    left: 6.5%;
+}
+
+.com3 {
+    top: 34%;
+    left: 6.5%;
+}
+
+/* Chips */
+
+.chip{
+    position: absolute;
+    border: 3px solid #4e4e4e;
+    cursor: pointer;
+}
+
+.chip-box{
+    transition: all 0.3s;
+}
+
+.chip-box:hover{
+    opacity: 0.7;
+}
+
+.chip-box:active{
+    opacity: 0.5;
+}
+
+.chip-big {
+    width: 28.2%;
+    height: 39.5%;
+    top: 6.7%;
+    left: 65%;
+    background: radial-gradient(circle at center, #555656, #333); /* Gradient for chip */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+}
+
+.chip-small {
+    width: 43.5%;
+    height: 11.8%;
+    top: 52.6%;
+    left: 50%;
+    background: radial-gradient(circle at center, #555656, #333); /* Gradient for chip */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+}
+
+.chip-main {
+    width: 30.4%;
+    height: 18.5%;
+    top: 71%;
+    left: 58.6%;
+    background: radial-gradient(circle at center,#676767, #8e8e8e); /* Gradient for chip */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+@keyframes fall-e {
+    0% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(300px); 
+      opacity: 0;
+    }
+  }
+  
+.fall-animation-e {
+    animation: fall-e 1s ease forwards; 
+}
