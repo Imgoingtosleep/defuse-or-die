@@ -1,7 +1,7 @@
 import './GenCode.css'
 
 type Props = {
-  Code_num: string;
+  Code_num: string | number;
 };
 
 function GenCode({ Code_num }: Props) {
