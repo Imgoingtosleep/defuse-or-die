@@ -6,15 +6,22 @@ type Probs = {
   onEnd: (outcome: 'win' | 'lose') => void
 }
 function GameScreen({ onEnd }: Probs) {
-  const explodeSound = new Audio('../../public/boooom.mp3')
-
-  
   const navigate = useNavigate()
 
   const goHome = () => {
-    explodeSound.play()
-    explodeSound.onended = () => {
-      navigate('/')  // Navigate to the home screen after the sound finishes
+    try {
+      const base = import.meta.env.BASE_URL || '/'
+      const explodeSound = new Audio(`${base}boooom.mp3`)
+      explodeSound.play().catch(() => {})
+      explodeSound.onended = () => {
+        navigate('/')
+      }
+      // Fallback in case audio is blocked or fails
+      setTimeout(() => {
+        navigate('/')
+      }, 2000)
+    } catch {
+      navigate('/')
     }
   }
 

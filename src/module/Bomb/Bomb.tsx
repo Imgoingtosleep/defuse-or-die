@@ -220,6 +220,13 @@ function Bomb({ onDefuse, onExplode }: Props) {
     }
   };
 
+  // Trigger explosion when time runs out
+  useEffect(() => {
+    if (timeLeft <= 0) {
+      onExplode();
+    }
+  }, [timeLeft, onExplode]);
+
   // Skip initial steps if conditions already met for the new code
   useEffect(() => {
     if (instructions.length > 0) {
