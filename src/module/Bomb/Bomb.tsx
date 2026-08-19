@@ -21,20 +21,20 @@ type Props = {
 
 
 function Bomb({ onDefuse, onExplode }: Props) {
-  const [code, setCode] = useState(1)
-  const [serialNumber] = useState<string>(generateSerialNumber());
-  const [previousCodes, setPreviousCodes] = useState<number[]>([])
+  const [code, setCode] = useState<number>(() => generateCode());
+  const [serialNumber] = useState<string>(() => generateSerialNumber());
+  const [previousCodes, setPreviousCodes] = useState<number[]>([]);
   const [timeLeft, setTimeLeft] = useState(360000);
   const [currentStep, setCurrentStep] = useState(0);
   const [failure, setFailure] = useState(0);
   const [success, setSuccess] = useState(0);
-  const [startTime, setStartTime] = useState<number>(0)
+  const [startTime, setStartTime] = useState<number>(360000);
 
   const maxSuccess = 5;
   const maxFailure = 3;
 
-  const wires = ["red", "blue", "green", "yellow", "pink"]
-  const fuses = ["fuse1", "fuse2", "fuse3", "fuse4"]
+  const wires = ["red", "blue", "green", "yellow", "pink"];
+  const fuses = ["fuse1", "fuse2", "fuse3", "fuse4"];
   const eComps = [
     "com_transistor_brown",
     "com_transistor_black",
@@ -47,9 +47,9 @@ function Bomb({ onDefuse, onExplode }: Props) {
     "chip-big",
     "chip-small",
     "chip-main"
-  ]
-  const switches = ["switch_button1", "switch_button2"]
-  const batteries = ["battery1", "battery2", "battery3"]
+  ];
+  const switches = ["switch_button1", "switch_button2"];
+  const batteries = ["battery1", "battery2", "battery3"];
 
   const [cutWires, setCutWires] = useState<string[]>([]);
   const [pulledFuses, setPulledFuses] = useState<string[]>([]);
@@ -60,233 +60,297 @@ function Bomb({ onDefuse, onExplode }: Props) {
     SB2: false,
   });
 
-  useEffect(() => {
-    generateNewCode()
-  }, [])
-  //Function to generate a new code different from the previous one
-  const generateNewCode = () => {
-    let newCode;
-    do {
-      newCode = generateCode()
-    } while (previousCodes.includes(newCode))
+  const playAudio = (file: string) => {
+    try {
+      const base = import.meta.env.BASE_URL || '/';
+      const sound = new Audio(`${base}${file}`);
+      sound.play().catch(() => {});
+    } catch {
+      // Audio playback ignore on error
+    }
+  };
 
-    setPreviousCodes(prev => [...prev, newCode])
-    setCode(newCode) // Set the new code
-    setCurrentStep(0)
+  const generateNewCode = () => {
+    let newCode: number;
+    let attempts = 0;
+    do {
+      newCode = generateCode();
+      attempts++;
+    } while (previousCodes.includes(newCode) && attempts < 50);
+
+    setPreviousCodes(prev => [...prev, newCode]);
+    setCode(newCode);
+    setCurrentStep(0);
+    setStartTime(timeLeft);
   };
 
   const instructions: Instruction[] = code !== null ? getInstructionsForCode(code) : [];
 
-  const handleSuccess = () => {
-    console.log(currentStep, instructions.length);
+  // Check if a specific step should be automatically skipped
+  const shouldSkipStep = (
+    stepIndex: number,
+    currentCutWires: string[],
+    currentPulledFuses: string[],
+    currentPulledEComps: string[],
+    currentPulledBatteries: string[],
+    currentSwitches: { [key: string]: boolean }
+  ): boolean => {
+    const inst = instructions[stepIndex];
+    if (!inst) return false;
 
-    if (currentStep === instructions.length) {
-      setSuccess(prev => prev + 1);
-      if (success + 1 === maxSuccess) {
-        onDefuse(); // Successfully defused
-      } else {
-        generateNewCode()
+    // Check serial condition
+    if (inst.condition?.serial && !checkSerialCondition(inst.condition.serial, serialNumber)) {
+      return true;
+    }
+
+    // Check already cut wire
+    if (inst.action === "cut" && inst.wireColor && currentCutWires.includes(inst.wireColor)) {
+      return true;
+    }
+
+    // Check already pulled fuse
+    if (inst.action === "pull" && inst.fuseName && currentPulledFuses.includes(inst.fuseName)) {
+      return true;
+    }
+
+    // Check already pulled eComp
+    if (inst.action === "pull" && inst.eCompName && currentPulledEComps.includes(inst.eCompName)) {
+      return true;
+    }
+
+    // Check already pulled battery
+    if (inst.action === "pull" && inst.batteryName && currentPulledBatteries.includes(inst.batteryName)) {
+      return true;
+    }
+
+    // Check switch state
+    if (inst.switchName) {
+      if (
+        (inst.action === "turnOn" && currentSwitches[inst.switchName]) ||
+        (inst.action === "turnOff" && !currentSwitches[inst.switchName])
+      ) {
+        return true;
       }
+    }
+
+    return false;
+  };
+
+  // Find next valid step by skipping unnecessary ones
+  const resolveNextStep = (
+    startStep: number,
+    currentCutWires: string[] = cutWires,
+    currentPulledFuses: string[] = pulledFuses,
+    currentPulledEComps: string[] = pulledEComps,
+    currentPulledBatteries: string[] = pulledBatteries,
+    currentSwitches: { [key: string]: boolean } = switchStates
+  ): number => {
+    let step = startStep;
+    while (
+      step < instructions.length &&
+      shouldSkipStep(step, currentCutWires, currentPulledFuses, currentPulledEComps, currentPulledBatteries, currentSwitches)
+    ) {
+      step++;
+    }
+    return step;
+  };
+
+  // Advance step or trigger code completion
+  const advanceStep = (
+    fromStep: number,
+    currentCutWires: string[] = cutWires,
+    currentPulledFuses: string[] = pulledFuses,
+    currentPulledEComps: string[] = pulledEComps,
+    currentPulledBatteries: string[] = pulledBatteries,
+    currentSwitches: { [key: string]: boolean } = switchStates
+  ) => {
+    const nextStep = resolveNextStep(
+      fromStep + 1,
+      currentCutWires,
+      currentPulledFuses,
+      currentPulledEComps,
+      currentPulledBatteries,
+      currentSwitches
+    );
+
+    if (nextStep >= instructions.length) {
+      // Completed all steps for this code
+      const nextSuccess = success + 1;
+      setSuccess(nextSuccess);
+      if (nextSuccess >= maxSuccess) {
+        onDefuse();
+      } else {
+        generateNewCode();
+      }
+    } else {
+      setCurrentStep(nextStep);
+      setStartTime(timeLeft);
     }
   };
 
   const handleFailure = () => {
-    setFailure(prev => prev + 1);
-    if (failure + 1 >= maxFailure) {
-      onExplode(); // Bomb exploded
+    const nextFailure = failure + 1;
+    setFailure(nextFailure);
+    if (nextFailure >= maxFailure) {
+      onExplode();
     } else {
-      generateNewCode()
+      generateNewCode();
     }
-  }
+  };
 
-  const validateStep = (condition: boolean) => {
+  const validateStep = (
+    condition: boolean,
+    currentCutWires: string[] = cutWires,
+    currentPulledFuses: string[] = pulledFuses,
+    currentPulledEComps: string[] = pulledEComps,
+    currentPulledBatteries: string[] = pulledBatteries,
+    currentSwitches: { [key: string]: boolean } = switchStates
+  ) => {
     if (condition) {
-      setCurrentStep(prev => prev + 1);
-      handleSuccess();
+      advanceStep(
+        currentStep,
+        currentCutWires,
+        currentPulledFuses,
+        currentPulledEComps,
+        currentPulledBatteries,
+        currentSwitches
+      );
     } else {
       handleFailure();
     }
   };
 
-  const autoSkip = () => {
-    console.log(currentStep);
-
-    const instruction = instructions[currentStep];
-    if (!instruction) return; // No instruction at this step
-
-    console.log(instruction.condition?.serial);
-
-    // Check serial number condition
-    if (instruction.condition?.serial && !checkSerialCondition(instruction.condition.serial, serialNumber)) {
-      console.log('Serial number condition not met, skipping to next step');
-      setCurrentStep(prev => prev + 1);
-      return;
-    }
-
-    // Check wire cut condition
-    if (instruction.action === "cut" && instruction.wireColor) {
-      if (cutWires.includes(instruction.wireColor)) {
-        console.log('Wire already cut, skipping to next step');
-        setCurrentStep(prev => prev + 1);
-        return;
-      }
-    }
-
-    // Check fuse pull condition
-    if (instruction.action === "pull" && instruction.fuseName) {
-      if (pulledFuses.includes(instruction.fuseName)) {
-        console.log('Fuse already pulled, skipping to next step');
-        setCurrentStep(prev => prev + 1);
-        return;
-      }
-    }
-
-    // Check eComp pull condition
-    if (instruction.action === "pull" && instruction.eCompName) {
-      if (pulledEComps.includes(instruction.eCompName)) {
-        console.log('eComp already pulled, skipping to next step');
-        setCurrentStep(prev => prev + 1);
-        return;
-      }
-    }
-
-
-    // Check Battery pull condition
-    if (instruction.action === "pull" && instruction.batteryName) {
-      if (pulledBatteries.includes(instruction.batteryName)) {
-        console.log('Battery already pulled, skipping to next step');
-        setCurrentStep(prev => prev + 1);
-        return;
-      }
-    }
-
-
-
-    // Check switch state
-    const switchName = instruction.switchName;
-    if (switchName) {
-      if (
-        (instruction.action === "turnOn" && switchStates[switchName]) ||
-        (instruction.action === "turnOff" && !switchStates[switchName])
-      ) {
-        console.log('Switch state is valid, skipping to next step');
-        setCurrentStep(prev => prev + 1);
-        return;
-      }
-    }
-
-    console.log('No skip conditions met, staying on current step');
-  };
-
+  // Skip initial steps if conditions already met for the new code
   useEffect(() => {
-    console.log(instructions[currentStep]);
-
-    setStartTime(timeLeft)
-    autoSkip()
-    handleSuccess()
-    console.log('code', code);
-
-  }, [currentStep]);
-
-  // current instruction has time withIn
-  useEffect(() => {
-    const instruction = instructions[currentStep]
-    const timeCondition = instruction.condition?.time
-    if (timeCondition && timeCondition.type === 'withIn') {
-      if (!checkTimeCondition(timeCondition, timeLeft, startTime)) {
-        handleFailure()
+    if (instructions.length > 0) {
+      const initialStep = resolveNextStep(0);
+      if (initialStep >= instructions.length) {
+        const nextSuccess = success + 1;
+        setSuccess(nextSuccess);
+        if (nextSuccess >= maxSuccess) {
+          onDefuse();
+        } else {
+          generateNewCode();
+        }
+      } else {
+        setCurrentStep(initialStep);
+        setStartTime(timeLeft);
       }
     }
-  }, [timeLeft])
-
+  }, [code]);
 
   const handleWireCut = (wireColor: string) => {
-    if (cutWires.includes(wireColor)) return
+    if (cutWires.includes(wireColor)) return;
+    const newCutWires = [...cutWires, wireColor];
+    setCutWires(newCutWires);
+    playAudio('cut.mp3');
 
-    setCutWires(prev => [...prev, wireColor])
-    const sound = new Audio('../../public/cut.mp3')
-    sound.play()
-    const instruction = instructions[currentStep]
-    const valid = instruction?.action === "cut" && wireColor === instruction.wireColor
-    validateStep(valid && checkTimeCondition(instruction.condition?.time, timeLeft, startTime))
-  }
+    const instruction = instructions[currentStep];
+    const valid = instruction?.action === "cut" && wireColor === instruction.wireColor;
+    validateStep(
+      valid && checkTimeCondition(instruction?.condition?.time, timeLeft, startTime),
+      newCutWires
+    );
+  };
 
   const handleFusePull = (fuseName: string) => {
-    if (pulledFuses.includes(fuseName)) return
+    if (pulledFuses.includes(fuseName)) return;
+    const newPulledFuses = [...pulledFuses, fuseName];
+    setPulledFuses(newPulledFuses);
+    playAudio('fuse.mp3');
 
-    setPulledFuses(prev => [...prev, fuseName])
-    const sound = new Audio('../../public/fuse.mp3')
-    sound.play()
-    const instruction = instructions[currentStep]
+    const instruction = instructions[currentStep];
     const valid = instruction?.action === "pull" && fuseName === instruction.fuseName;
-    validateStep(valid && checkTimeCondition(instruction.condition?.time, timeLeft, startTime));
-  }
+    validateStep(
+      valid && checkTimeCondition(instruction?.condition?.time, timeLeft, startTime),
+      cutWires,
+      newPulledFuses
+    );
+  };
 
   const handleECompPull = (eCompName: string) => {
     if (pulledEComps.includes(eCompName)) return;
+    const newPulledEComps = [...pulledEComps, eCompName];
+    setPulledEComps(newPulledEComps);
+    playAudio('fuse.mp3');
 
-    setPulledEComps(prev => [...prev, eCompName]);
-    const sound = new Audio('../../public/fuse.mp3')
-    sound.play()
     const instruction = instructions[currentStep];
     const valid = instruction?.action === "pull" && eCompName === instruction.eCompName;
-    validateStep(valid && checkTimeCondition(instruction.condition?.time, timeLeft, startTime));
-  }
+    validateStep(
+      valid && checkTimeCondition(instruction?.condition?.time, timeLeft, startTime),
+      cutWires,
+      pulledFuses,
+      newPulledEComps
+    );
+  };
 
   const handleBatteryPull = (batteryName: string) => {
     if (pulledBatteries.includes(batteryName)) return;
-    const sound = new Audio('../../public/fuse.mp3')
-    sound.play()
-    setPulledBatteries(prev => [...prev, batteryName]);
+    const newPulledBatteries = [...pulledBatteries, batteryName];
+    setPulledBatteries(newPulledBatteries);
+    playAudio('fuse.mp3');
 
     const instruction = instructions[currentStep];
     const valid = instruction?.action === "pull" && batteryName === instruction.batteryName;
-    validateStep(valid && checkTimeCondition(instruction.condition?.time, timeLeft, startTime));
-  }
+    validateStep(
+      valid && checkTimeCondition(instruction?.condition?.time, timeLeft, startTime),
+      cutWires,
+      pulledFuses,
+      pulledEComps,
+      newPulledBatteries
+    );
+  };
 
   const handleSwitchButton = (switchName: string) => {
+    const newSwitches = { ...switchStates, [switchName]: !switchStates[switchName] };
+    setSwitchStates(newSwitches);
+    playAudio('switch.mp3');
 
-    setSwitchStates(prev => ({ ...prev, [switchName]: !prev[switchName] }))
-
-    const instruction = instructions[currentStep]
+    const instruction = instructions[currentStep];
     const valid = instruction?.switchName === switchName && (
-      (instruction.action === "turnOn" && !switchStates[switchName]) ||
-      (instruction.action === "turnOff" && switchStates[switchName])
-    )
-    validateStep(valid && checkTimeCondition(instruction.condition?.time, timeLeft, startTime));
-  }
+      (instruction.action === "turnOn" && newSwitches[switchName]) ||
+      (instruction.action === "turnOff" && !newSwitches[switchName])
+    );
+    validateStep(
+      valid && checkTimeCondition(instruction?.condition?.time, timeLeft, startTime),
+      cutWires,
+      pulledFuses,
+      pulledEComps,
+      pulledBatteries,
+      newSwitches
+    );
+  };
 
   const handleButtonPressed = () => {
-    const instruction = instructions[currentStep]
-    const timeCondition = instruction.condition?.time
-    const sound = new Audio('../../public/teet.mp3')
-    sound.play()
-    if (instruction.action === "press") {
-      validateStep(checkTimeCondition(timeCondition, timeLeft, startTime))
-    } else if (instruction.action === "hold") {
-      setStartTime(timeLeft)
-    } else {
-      console.log("What the funk is this?");
+    const instruction = instructions[currentStep];
+    const timeCondition = instruction?.condition?.time;
+    playAudio('teet.mp3');
+
+    if (instruction?.action === "press") {
+      validateStep(checkTimeCondition(timeCondition, timeLeft, startTime));
+    } else if (instruction?.action === "hold") {
+      setStartTime(timeLeft);
     }
-  }
+  };
 
   const handleButtonReleased = () => {
-    const instruction = instructions[currentStep]
-    const timeCondition = instruction.condition?.time
-    if (timeCondition && timeCondition.type === 'at') {
-      validateStep(checkTimeCondition(timeCondition, timeLeft, startTime))
-    } else {
-      validateStep(true)
+    const instruction = instructions[currentStep];
+    const timeCondition = instruction?.condition?.time;
+    if (instruction?.action === "hold" || instruction?.action === "release") {
+      if (timeCondition && timeCondition.type === 'at') {
+        validateStep(checkTimeCondition(timeCondition, timeLeft, startTime));
+      } else {
+        validateStep(true);
+      }
     }
-  }
+  };
 
   const handleKeyPressed = (key: string) => {
-    const sound = new Audio('../../public/numpad.mp3')
-    sound.play()
-    const instruction = instructions[currentStep]
-    const valid = instruction.action === 'keyPress' && instruction.keyNum === key
-    validateStep(valid)
-  }
+    playAudio('numpad.mp3');
+    const instruction = instructions[currentStep];
+    const valid = instruction?.action === 'keyPress' && instruction.keyNum === key;
+    validateStep(valid);
+  };
   return (
     <>
     <div className="large-container">
